@@ -1,0 +1,11 @@
+2> Deployment
+  1)Set the minReadySec say 10 sec,
+    #kubectl patch deployment kubia -p '{"spec": {"minReadySeconds": 10}}'
+    #kubectl describe pod kubia
+  2)set image on the deployment,
+    #kubectl set image deployment <deployment_name> <image_name>=<image_to_be_upgraded>
+	Ex: #kubectl set image deployment kubia nodejs=luksa/kubia:v3
+  Note: the image we are pulling must be present in docker hub.
+    #kubectl get rs
+	#kubectl get po -o wide
+	#curl <node_ip:port>  -->shows which image is running in that particular node.
