@@ -1,0 +1,4 @@
+1> A daemon set ensures that the pod runs on all the nodes of the cluster. When new node joins the cluster daemon set will automatically start running a pod in that node.
+   a)Daemon set is used for monitoring the resource utilization on each node in a cluster such as CPU utilization, memory usage,disk usage and other resources.
+   b)It is also used to collect log data of each node.
+   c)Used for taking backups of the node data.
