@@ -1,0 +1,81 @@
+4> Voting App
+   Commands used:
+>> Go to this path /root/example-voting-app/k8s-specifications
+[root@ip-172-31-34-224 k8s-specifications]# pwd
+/root/example-voting-app/k8s-specifications
+>>List of yaml files in this directory: 
+[root@ip-172-31-34-224 k8s-specifications]# ll
+total 36
+-rw-r--r-- 1 root root 401 Jan 28 11:06 db-deployment.yaml
+-rw-r--r-- 1 root root 146 Jan 28 11:06 db-service.yaml
+-rw-r--r-- 1 root root 402 Jan 28 11:06 redis-deployment.yaml
+-rw-r--r-- 1 root root 152 Jan 28 11:06 redis-service.yaml
+-rw-r--r-- 1 root root 299 Jan 28 11:06 result-deployment.yaml
+-rw-r--r-- 1 root root 195 Jan 28 11:06 result-service.yaml
+-rw-r--r-- 1 root root 289 Jan 28 11:06 vote-deployment.yaml
+-rw-r--r-- 1 root root 192 Jan 28 11:06 vote-service.yaml
+-rw-r--r-- 1 root root 292 Jan 28 11:06 worker-deployment.yaml
+ 
+>>Running all the yaml files to create the pods:
+[root@ip-172-31-34-224 k8s-specifications]# kubectl apply -f .
+deployment.apps/db created
+service/db created
+deployment.apps/redis created
+service/redis created
+deployment.apps/result created
+service/result created
+deployment.apps/vote created
+service/vote created
+deployment.apps/worker created
+ 
+>>
+[root@ip-172-31-34-224 k8s-specifications]#  kubectl get all
+NAME                          READY   STATUS    RESTARTS   AGE
+pod/db-b54cd94f4-ckn46        1/1     Running   0          118s
+pod/redis-868d64d78-q9rjk     1/1     Running   0          118s
+pod/result-5d57b59f4b-gnk8p   1/1     Running   0          118s
+pod/vote-94849dc97-clfff      1/1     Running   0          117s
+pod/worker-dd46d7584-clxhf    1/1     Running   0          117s
+
+NAME                 TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                                                                                       AGE
+service/db           ClusterIP   10.107.249.234   <none>        5432/TCP                                                                                      118s
+service/kubernetes   ClusterIP   10.96.0.1        <none>        443/TCP                                                                                       8m22s
+service/redis        ClusterIP   10.104.59.95     <none>        6379/TCP                                                                                      118s
+service/result       NodePort    10.98.133.214    <none>        5001:31001/TCP                                                                                117s
+service/vote         NodePort    10.106.54.109    <none>        5000:31000/TCP                                                                                117s
+
+NAME                     READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/db       1/1     1            1           118s
+deployment.apps/redis    1/1     1            1           118s
+deployment.apps/result   1/1     1            1           118s
+deployment.apps/vote     1/1     1            1           117s
+deployment.apps/worker   1/1     1            1           117s
+
+NAME                                DESIRED   CURRENT   READY   AGE
+replicaset.apps/db-b54cd94f4        1         1         1       118s
+replicaset.apps/redis-868d64d78     1         1         1       118s
+replicaset.apps/result-5d57b59f4b   1         1         1       118s
+replicaset.apps/vote-94849dc97      1         1         1       117s
+replicaset.apps/worker-dd46d7584    1         1         1       117s
+
+>>
+[root@ip-172-31-34-224 ~]# kubectl get svc
+NAME         TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+db           ClusterIP   10.107.249.234   <none>        5432/TCP         26m
+kubernetes   ClusterIP   10.96.0.1        <none>        443/TCP          32m
+redis        ClusterIP   10.104.59.95     <none>        6379/TCP         26m
+result       NodePort    10.98.133.214    <none>        5001:31001/TCP   26m
+vote         NodePort    10.106.54.109    <none>        5000:31000/TCP   26m
+
+Note: Here worker node is not assigned with service.  
+   
+   
+>>We can access the voting application in browser using <public_Ip:node_port>
+  Here node_port of the vote app is 31000.
+  vote         NodePort    10.106.54.109    <none>        5000:31000/TCP
+  Similarly for result app, node_port is 31001
+  result       NodePort    10.98.133.214    <none>        5001:31001/TCP   26m
+  
+  When we start voting in the voting app, it is getting refelected in the result app.
+    
+  
