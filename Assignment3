@@ -1,0 +1,6 @@
+3> 
+   Check if mapping of node port to service port done poperly.
+   We can check for the node port using #kubectl get svc
+   We can access the node port service using <public_Ip:node_port>
+   Check the end points using #kubectl get ep 
+   
