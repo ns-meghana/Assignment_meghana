@@ -1,0 +1,68 @@
+Observation:
+a)Deletion of voting pod:
+
+[root@ip-172-31-34-224 ~]# kubectl get po
+NAME                      READY   STATUS    RESTARTS   AGE
+db-b54cd94f4-ckn46        1/1     Running   0          17h
+redis-868d64d78-q9rjk     1/1     Running   0          17h
+result-5d57b59f4b-gnk8p   1/1     Running   0          17h
+vote-94849dc97-clfff      1/1     Running   0          17h
+worker-dd46d7584-clxhf    1/1     Running   0          17h
+[root@ip-172-31-34-224 ~]#
+
+>>Deleting the voting pod --> vote-94849dc97-clfff
+[root@ip-172-31-34-224 ~]# kubectl delete po vote-94849dc97-clfff
+pod "vote-94849dc97-clfff" deleted
+
+^C
+[root@ip-172-31-34-224 ~]# kubectl get po
+NAME                      READY   STATUS    RESTARTS   AGE
+db-b54cd94f4-ckn46        1/1     Running   0          17h
+redis-868d64d78-q9rjk     1/1     Running   0          17h
+result-5d57b59f4b-gnk8p   1/1     Running   0          17h
+vote-94849dc97-zlbml      1/1     Running   0          10s
+worker-dd46d7584-clxhf    1/1     Running   0          17h
+
+   
+   *On deleting the voting pod no changes are seen in front-end .Deletion of the these pods have not impacted on the result of voting.   
+	Voting app is working fine.
+   *All the pods were in running status.
+   *As we delete the pod, new pod is been created because of deployment.
+   *Earlier voting app was " Processed by container ID vote-94849dc97-clfff".
+   *But after deleting the voting pod app started running in newly created container ie., "Processed by container ID vote-94849dc97-zlbml".
+   *In the above command we can see that voting pod has started 10 sec ago.
+   
+b) Deleting worker pod:
+ 
+[root@ip-172-31-34-224 ~]# kubectl delete po worker-dd46d7584-clxhf
+pod "worker-dd46d7584-clxhf" deleted
+[root@ip-172-31-34-224 ~]#
+[root@ip-172-31-34-224 ~]# kubectl get po
+NAME                      READY   STATUS    RESTARTS   AGE
+db-b54cd94f4-ckn46        1/1     Running   0          17h
+redis-868d64d78-q9rjk     1/1     Running   0          17h
+result-5d57b59f4b-gnk8p   1/1     Running   0          17h
+vote-94849dc97-zlbml      1/1     Running   0          15m
+worker-dd46d7584-2kglf    1/1     Running   0          21s
+
+ *Both the applications are working fine in the front end.
+ *As soon as worker pod got deleted , another worker pod got created with different container_id - 2kglf.
+ 
+c)Deleting DB pod:
+
+[root@ip-172-31-34-224 k8s-specifications]# kubectl delete po db-b54cd94f4-ckn46
+pod "db-b54cd94f4-ckn46" deleted
+[root@ip-172-31-34-224 k8s-specifications]# kubectl get po
+NAME                      READY   STATUS    RESTARTS   AGE
+db-b54cd94f4-mcrjl        1/1     Running   0          47s
+redis-868d64d78-q9rjk     1/1     Running   0          18h
+result-5d57b59f4b-gnk8p   1/1     Running   1          18h
+vote-94849dc97-zlbml      1/1     Running   0          52m
+worker-dd46d7584-2kglf    1/1     Running   1          37m
+
+*As we deleted the DB pod , same as vote and worker pod db pod also got created.
+
+NOTE: Once the db pod is deleted result pod and worker pod went into "RESTARTS" status.
+      All the pods got created in the background , it is because 'Deployment creates specified number of replica to our application pods.Such that it creates the end point to access the application.  
+
+Even after the deletion after DB pod , voting app is working fine.
